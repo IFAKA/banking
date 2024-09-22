@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { signUp } from "@/lib/actions/user.actions";
+import { signIn, signUp } from "@/lib/actions/user.actions";
 import { getAuthFormSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -41,9 +41,9 @@ const AuthForm = ({ type }: AuthFormProps) => {
         setUser(newUser);
       }
       if (type === "sign-in") {
-        // const response = await signIn(data);
-        //  // {email:data.email,pass:data.pass}
-        // if (response) push("/");
+        const response = await signIn(data);
+
+        if (response) push("/");
       }
     } catch (error) {
       console.error(error);
