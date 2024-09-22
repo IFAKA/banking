@@ -2,17 +2,18 @@
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { signIn, signUp } from "@/lib/actions/user.actions";
+import { getAuthFormSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomInput from "./CustomInput";
-import { getAuthFormSchema } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { signIn, signUp } from "@/lib/actions/user.actions";
+import PlaidLink from "./PlaidLink";
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const { push } = useRouter();
@@ -36,13 +37,23 @@ const AuthForm = ({ type }: AuthFormProps) => {
     setIsLoading(true);
     try {
       if (type === "sign-up") {
-        const newUser = await signUp(data);
+        const newUser = await signUp({
+          email: data.email,
+          password: data.password,
+          address1: data.address1!,
+          city: data.city!,
+          dateOfBirth: data.dateOfBirth!,
+          firstName: data.firstName!,
+          lastName: data.lastName!,
+          postalCode: data.postalCode!,
+          ssn: data.ssn!,
+          state: data.state!,
+        });
 
         setUser(newUser);
       }
       if (type === "sign-in") {
         const response = await signIn(data);
-        //  // {email:data.email,pass:data.pass}
 
         if (response) push("/");
       }
@@ -80,7 +91,9 @@ const AuthForm = ({ type }: AuthFormProps) => {
         </div>
       </header>
       {user ? (
-        <div className="flex flex-col gap-4">{/* PlaidLink */}</div>
+        <div className="flex flex-col gap-4">
+          <PlaidLink user={user} variant="primary" />
+        </div>
       ) : (
         <>
           <Form {...form}>
