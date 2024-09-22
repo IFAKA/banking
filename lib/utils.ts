@@ -2,6 +2,7 @@
 import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -193,3 +194,31 @@ export const getTransactionStatus = (date: Date) => {
 
   return date > twoDaysAgo ? "Processing" : "Success";
 };
+
+export const getAuthFormSchema = (type: string) => {
+  const isOptionalField = (type: string) =>
+    type === "sign-in" ? z.string().optional() : null;
+  const stringLimit = (min: number, max?: number) =>
+    max ? z.string().min(min).max(max) : z.string().min(min);
+
+  return z.object({
+    // sign up
+    firstName: isOptionalField(type) ?? stringLimit(2),
+    lastName: isOptionalField(type) ?? stringLimit(2),
+    address1: isOptionalField(type) ?? stringLimit(2, 50),
+    city: isOptionalField(type) ?? stringLimit(2),
+    state: isOptionalField(type) ?? stringLimit(2, 2),
+    postalCode: isOptionalField(type) ?? stringLimit(3, 6),
+    dateOfBirth: isOptionalField(type) ?? stringLimit(10, 10),
+    ssn: isOptionalField(type) ?? stringLimit(3),
+    // shared with sign in
+    email: z.string().email(),
+    password: z.string().min(8),
+  });
+};
+
+export const camelToTitleCase = (str: string) =>
+  str
+    .replace(/[0-9]/g, "") // Remove numbers
+    .replace(/([A-Z])/g, " $1") // Add space before uppercase letters
+    .replace(/^./, (s) => s.toUpperCase()); // Capitalize first letter
