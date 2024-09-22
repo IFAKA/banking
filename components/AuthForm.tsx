@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomInput from "./CustomInput";
+import PlaidLink from "./PlaidLink";
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const { push } = useRouter();
@@ -36,7 +37,18 @@ const AuthForm = ({ type }: AuthFormProps) => {
     setIsLoading(true);
     try {
       if (type === "sign-up") {
-        const newUser = await signUp(data);
+        const newUser = await signUp({
+          email: data.email,
+          password: data.password,
+          address1: data.address1!,
+          city: data.city!,
+          dateOfBirth: data.dateOfBirth!,
+          firstName: data.firstName!,
+          lastName: data.lastName!,
+          postalCode: data.postalCode!,
+          ssn: data.ssn!,
+          state: data.state!,
+        });
 
         setUser(newUser);
       }
@@ -79,7 +91,9 @@ const AuthForm = ({ type }: AuthFormProps) => {
         </div>
       </header>
       {user ? (
-        <div className="flex flex-col gap-4">{/* PlaidLink */}</div>
+        <div className="flex flex-col gap-4">
+          <PlaidLink user={user} variant="primary" />
+        </div>
       ) : (
         <>
           <Form {...form}>
