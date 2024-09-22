@@ -2,17 +2,17 @@
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { signIn, signUp } from "@/lib/actions/user.actions";
+import { getAuthFormSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CustomInput from "./CustomInput";
-import { getAuthFormSchema } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { signIn, signUp } from "@/lib/actions/user.actions";
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const { push } = useRouter();
@@ -42,7 +42,6 @@ const AuthForm = ({ type }: AuthFormProps) => {
       }
       if (type === "sign-in") {
         const response = await signIn(data);
-        //  // {email:data.email,pass:data.pass}
 
         if (response) push("/");
       }
